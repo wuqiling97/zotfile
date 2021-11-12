@@ -108,6 +108,7 @@ Abbott, Andrew, and Alexandra Hrycak (1990): Measuring Resemblance in Sequence D
 All wildcards are now defined in the hidden preference `zotfile.wildcards.default` and can be changed by the user. But I **strongly** suggest that you do not change this preference. Instead, there is a second hidden preference  `zotfile.wildcards.user` that allows you to add and overwrite wildcards (hidden preference can be changed in `about:config`). This is a preference is for advanced user without any error checking so be careful what you do! By default, `zotfile.wildcards.user` is set to `{}` so that no user wildcards are defined. Below is an example JSON that defines wildcards for `%1`, `%2`, `%3`, `%4` illustrating all the possibilities:
 
 1. String with the name of Zotero field (`%1`)
+
 2. JSON with item type specific field names (`%2`)
 
     Always include a `default` value. Otherwise this is not going to work. A list of all item types is available [here](https://api.zotero.org/itemTypes?pprint=1).
@@ -134,6 +135,8 @@ All wildcards are now defined in the hidden preference `zotfile.wildcards.defaul
 
 4. Finally, the wildcard `%5` combines item type specific field names with regular expression.
 
+5. wildcard `%6` uses the specified `field` as an input string and then applies the javascript function specified in `function`. The js function will receive a parameter named `field`, and you can use it in expressions. 
+
 
 ##### Example for user-defined wildcards
 
@@ -158,6 +161,10 @@ All wildcards are now defined in the hidden preference `zotfile.wildcards.defaul
             "transform": "upperCase"
         },
         "journalArticle": "publicationTitle"
+    },
+    "6": {
+        "field": "publicationTitle",
+        "function": "var patterns = [[/arxiv/i, 'arxiv'],[/Computer Vision and Pattern Recognition/i, 'CVPR']];for(let p of patterns) {if(field.search(p[0]) !== -1) {return p[1];}}return field"
     }
 }
 ````

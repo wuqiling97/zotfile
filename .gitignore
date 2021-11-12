@@ -1,0 +1,5 @@
+/Makefile.in
+.DS_Store
+*.xpi
+/pack.py
+/develop.md

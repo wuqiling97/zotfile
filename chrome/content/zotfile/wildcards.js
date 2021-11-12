@@ -3,8 +3,11 @@
  * Zotero.ZotFile.Wildcards
  * Functions to replace wildcards and contruct filename
  */
+function log(...data) {
+    data.unshift('[WILDCARDS]');
+    Components.utils.reportError(data);
+}
 Zotero.ZotFile.Wildcards = new function() {
-
     var _this = this;
     this.emptyCollectionPlaceholder = "EMPTY_COLLECTION_NAME";
 
@@ -242,6 +245,7 @@ Zotero.ZotFile.Wildcards = new function() {
         var regexWildcard = function(item, w) {
             var field = w.field,
                 operations = w.operations,
+                func_str = w.function,
                 output = '';
             // get field
             if (typeof(field)=='string')
@@ -280,7 +284,13 @@ Zotero.ZotFile.Wildcards = new function() {
                     if(obj.function=="truncateTitle")
                         output = truncateTitle(output);
                 }
+            } else if(func_str!==undefined) {
+                const func = new Function('field', func_str);
+                const origin = output;
+                output = func(output);
+                // log(origin, output)
             }
+
             // return
             return output;
         };
@@ -299,8 +309,10 @@ Zotero.ZotFile.Wildcards = new function() {
             if(typeof(property)=='object') {
                 // javascript object with item type specific field names (e.g. '%w')
                    /* Note: 'default' key defines default, only include item types that are different */
+                // select property according to paper type,根据file类型选择操作的object
                 if('default' in property) value = itemtypeWildcard(item, property);
                 // javascript object with three elements for field, regular expression, and group (e.g. '%y')
+                // transform field, 对field进行变换的object
                 if('field' in property) value = regexWildcard(item, property);
             }
             // add element to wildcards table
