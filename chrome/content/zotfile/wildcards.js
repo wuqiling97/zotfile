@@ -6,6 +6,7 @@
 function log(...data) {
     data.unshift('[WILDCARDS]');
     Components.utils.reportError(data);
+    // console.log(...data);
 }
 Zotero.ZotFile.Wildcards = new function() {
     var _this = this;
@@ -288,7 +289,7 @@ Zotero.ZotFile.Wildcards = new function() {
                 const func = new Function('field', func_str);
                 const origin = output;
                 output = func(output);
-                // log(origin, output)
+                log(origin, output);
             }
 
             // return
